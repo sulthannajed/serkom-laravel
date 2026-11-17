@@ -1,6 +1,6 @@
 # Kopi Ulee Kareng
 
-Landing page dan CRUD produk menggunakan Laravel 12.
+Landing page dan CRUD produk menggunakan Laravel 13.
 
 ## Teknologi
 - PHP 8.5
