@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -40,11 +41,26 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_produk' => 'required|string|max:100',
+            'nama_produk' => 'required|string|max:100|unique:products,nama_produk',
             'deskripsi' => 'required|string',
             'harga' => 'required|integer|min:0',
-            'gambar' => 'nullable|string|max:255',
+            'stok' => 'required|integer|min:0',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'nama_produk.unique' => 'Nama produk sudah digunakan.',
+            'gambar.image' => 'File yang diunggah harus berupa gambar.',
+            'gambar.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
+            'gambar.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
+
+        if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images'), $filename);
+            $validated['gambar'] = $filename;
+        } else {
+            $validated['gambar'] = null;
+        }
 
         Product::query()->create($validated);
 
@@ -76,12 +92,38 @@ class ProductController extends Controller
     {
         $validated = $request->validate(
             [
-                'nama_produk' => 'required|string|max:100',
+                'nama_produk' => [
+                    'required',
+                    'string',
+                    'max:100',
+                    Rule::unique('products', 'nama_produk')->ignore($products->id),
+                ],
                 'deskripsi' => 'required|string',
                 'harga' => 'required|integer|min:0',
-                'gambar' => 'nullable|string|max:255',
+                'stok' => 'required|integer|min:0',
+                'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             ],
+            [
+                'nama_produk.unique' => 'Nama produk sudah digunakan.',
+                'gambar.image' => 'File yang diunggah harus berupa gambar.',
+                'gambar.mimes' => 'Format gambar harus jpeg, png, jpg, atau webp.',
+                'gambar.max' => 'Ukuran gambar maksimal 2MB.',
+            ]
         );
+
+        if ($request->hasFile('gambar')) {
+            $defaultImages = ['kopi-default.jpg', 'americano.jpg', 'espresso.jpg', 'sanger.jpg'];
+            if ($products->gambar && !in_array($products->gambar, $defaultImages) && file_exists(public_path('images/' . $products->gambar))) {
+                @unlink(public_path('images/' . $products->gambar));
+            }
+
+            $file = $request->file('gambar');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images'), $filename);
+            $validated['gambar'] = $filename;
+        } else {
+            unset($validated['gambar']);
+        }
 
         $products->update($validated);
 
@@ -95,6 +137,11 @@ class ProductController extends Controller
      */
     public function destroy(Product $products): RedirectResponse
     {
+        $defaultImages = ['kopi-default.jpg', 'americano.jpg', 'espresso.jpg', 'sanger.jpg'];
+        if ($products->gambar && !in_array($products->gambar, $defaultImages) && file_exists(public_path('images/' . $products->gambar))) {
+            @unlink(public_path('images/' . $products->gambar));
+        }
+
         $products->delete();
 
         return redirect()

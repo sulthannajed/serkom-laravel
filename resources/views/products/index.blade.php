@@ -31,6 +31,7 @@
                         <th>No.</th>
                         <th>Nama</th>
                         <th>Harga</th>
+                        <th>Stok</th>
                         <th>Gambar</th>
                         <th>Aksi</th>
                     </tr>
@@ -46,7 +47,15 @@
                             <td>
                                 Rp{{ number_format($produk->harga, 0, ',', '.') }}
                             </td>
-                            <td>{{ $produk->gambar ?: 'kopi-default.jpg' }}</td>
+                            <td>{{ $produk->stok }}</td>
+                            <td>
+                               <img
+                               src="{{ asset('images/' . ($produk->gambar ?: 'kopi-default.jpg')) }}"
+                               alt="{{ $produk->nama_produk }}"
+                               class="img-thumbnail"
+                               style="max-width: 50px; max-height: 50px;"
+                               >
+                            </td>
                             <td class="actions">
                                 <a class="btn btn-small btn-edit"
                                    href="{{ route('products.edit', $produk) }}">

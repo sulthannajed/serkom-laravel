@@ -41,13 +41,37 @@
 </div>
 
 <div class="form-group">
-    <label for="gambar">Nama file gambar (opsional)</label>
+    <label for="stok">Stok</label>
+    <input
+        id="stok"
+        name="stok"
+        type="number"
+        min="0"
+        value="{{ old('stok', $products->stok ?? '') }}"
+        class="form-control @error('stok') is-invalid @enderror"
+    >
+    @error('stok')
+        <small class="error">{{ $message }}</small>
+    @enderror
+</div>
+
+<div class="form-group">
+    <label for="gambar">Gambar Produk (opsional)</label>
+    @if (!empty($products->gambar))
+        <div style="margin-bottom: 8px;">
+            <img
+                src="{{ asset('images/' . $products->gambar) }}"
+                alt="{{ $products->nama_produk }}"
+                style="max-width: 120px; max-height: 120px; border-radius: 6px; object-fit: cover; display: block; margin-bottom: 4px;"
+            >
+            <small style="color: #666;">Gambar saat ini: {{ $products->gambar }}</small>
+        </div>
+    @endif
     <input
         id="gambar"
         name="gambar"
-        type="text"
-        placeholder="contoh: kopi-original.jpg"
-        value="{{ old('gambar', $products->gambar ?? '') }}"
+        type="file"
+        accept="image/jpeg,image/png,image/jpg,image/webp"
         class="form-control @error('gambar') is-invalid @enderror"
     >
     @error('gambar')

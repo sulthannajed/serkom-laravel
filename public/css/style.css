@@ -30,8 +30,9 @@ img { display: block; width: 100%; }
     position: sticky;
     top: 0;
     z-index: 20;
-    background: rgba(255, 255, 255, .96);
+    background: rgba(9, 135, 13, 0.96);
     border-bottom: 1px solid var(--border);
+    color: var(--white);
 }
 .nav-inner {
     display: flex;
@@ -40,7 +41,7 @@ img { display: block; width: 100%; }
     min-height: 72px;
     gap: 24px;
 }
-.brand { color: var(--coffee-dark); font-weight: 800; }
+.brand { color: var(--white); font-weight: 800; }
 nav { display: flex; align-items: center; gap: 20px; }
 nav a:hover { color: var(--gold); }
 

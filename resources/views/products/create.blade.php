@@ -13,6 +13,7 @@
         </div>
 
         <form method="POST" action="{{ route('products.store') }}"
+              enctype="multipart/form-data"
               class="form-card">
             @csrf
             @include('products._form', ['tombol' => 'Simpan Produk'])

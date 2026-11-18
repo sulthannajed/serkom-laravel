@@ -13,6 +13,7 @@ class Product extends Model
         'nama_produk',
         'deskripsi',
         'harga',
+        'stok',
         'gambar'
     ];
 
@@ -20,6 +21,7 @@ class Product extends Model
     {
         return [
             'harga' => 'integer',
+            'stok' => 'integer',
         ];
     }
 }

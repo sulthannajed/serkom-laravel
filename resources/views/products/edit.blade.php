@@ -14,6 +14,7 @@
 
         <form method="POST"
               action="{{ route('products.update', $products) }}"
+              enctype="multipart/form-data"
               class="form-card">
             @csrf
             @method('PUT')
